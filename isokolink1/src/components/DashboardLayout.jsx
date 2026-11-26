@@ -1,20 +1,74 @@
 
 import { Link, useNavigate } from "react-router";
+
 import {
   LayoutDashboard,
-  ShoppingBag,
   Users,
-  Truck,
   Sprout,
-  LogOut
+  LogOut,
+  Languages,
+  Coins,
+  Handshake,
+  UserRound,
+  Store,
+  Bot
 } from "lucide-react";
 
-function DashboardLayout({ title, children }) {
+function DashboardLayout({ title, children, role = "farmer" }) {
   const navigate = useNavigate();
+
+  const navigation = [
+    {
+      label: "Dashboard",
+      path: `/${role}-dashboard`,
+      icon: LayoutDashboard,
+      roles: ["farmer", "buyer", "transporter", "admin"]
+    },
+    {
+      label: "Marketplace",
+      path: "/marketplace",
+      icon: Store,
+      roles: ["farmer", "buyer", "transporter", "admin"]
+    },
+    {
+      label: "Group Selling",
+      path: "/group-selling",
+      icon: Handshake,
+      roles: ["farmer", "buyer", "admin"]
+    },
+    {
+      label: "Currency Exchange",
+      path: "/currency-exchange",
+      icon: Coins,
+      roles: ["farmer", "buyer", "admin"]
+    },
+    {
+      label: "Translator",
+      path: "/translator",
+      icon: Languages,
+      roles: ["farmer", "buyer", "transporter", "admin"]
+    },
+    {
+      label: "AI Assistant",
+      path: "/ai-assistant",
+      icon: Bot,
+      roles: ["farmer", "buyer", "transporter", "admin"]
+    },
+    {
+      label: "My Account",
+      path: "/account",
+      icon: UserRound,
+      roles: ["farmer", "buyer", "transporter", "admin"]
+    }
+  ];
 
   function handleLogout() {
     navigate("/login");
   }
+
+  const visibleNavigation = navigation.filter((item) =>
+    item.roles.includes(role)
+  );
 
   return (
     <div className="dashboard-container">
@@ -25,33 +79,22 @@ function DashboardLayout({ title, children }) {
         </Link>
 
         <nav className="dashboard-nav">
-          <Link to="/farmer-dashboard">
-            <LayoutDashboard size={18} />
-            Farmer Dashboard
-          </Link>
+          {visibleNavigation.map((item) => {
+            const Icon = item.icon;
 
-          <Link to="/buyer-dashboard">
-            <ShoppingBag size={18} />
-            Buyer Dashboard
-          </Link>
-
-          <Link to="/transporter-dashboard">
-            <Truck size={18} />
-            Transporter Dashboard
-          </Link>
-
-          <Link to="/admin-dashboard">
-            <Users size={18} />
-            Admin Dashboard
-          </Link>
-
-          <Link to="/marketplace">
-            <ShoppingBag size={18} />
-            Marketplace
-          </Link>
+            return (
+              <Link to={item.path} key={item.path}>
+                <Icon size={18} />
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        <button onClick={handleLogout} className="logout-button">
+        <button
+          onClick={handleLogout}
+          className="logout-button"
+        >
           <LogOut size={18} />
           Logout
         </button>
@@ -59,8 +102,17 @@ function DashboardLayout({ title, children }) {
 
       <main className="dashboard-main">
         <header className="dashboard-header">
-          <h1>{title}</h1>
-          <span>Welcome to IsokoLink Rwanda</span>
+          <div>
+            <h1>{title}</h1>
+            <span>
+              Welcome to IsokoLink Rwanda
+            </span>
+          </div>
+
+          <div className="dashboard-role">
+            <Users size={18} />
+            {role.charAt(0).toUpperCase() + role.slice(1)}
+          </div>
         </header>
 
         <section className="dashboard-content">
